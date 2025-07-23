@@ -23,6 +23,11 @@ public class CrudApplication {
     }
 
     private void createStudent(StudentDAO studentDAO) {
-        Student tempStudent = new Student("Paul","Doe","paul@gmail.com");
+        Student tempStudent = new Student("Ramakant","Thakkar","Rama@gmail.com");
+        Student tempStuden1 = new Student("Radhe","Tiwari","Radhe@gmail.com");
+        Student tempStuden2 = new Student("Jitu","Telecom","Jitu@gmail.com");
+        studentDAO.save(tempStudent);
+        studentDAO.save(tempStuden1);
+        studentDAO.save(tempStuden2);
     }
 }
