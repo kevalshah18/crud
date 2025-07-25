@@ -18,16 +18,32 @@ public class CrudApplication {
     @Bean
     public CommandLineRunner commandLineRunner(StudentDAO studentDAO) {
         return runner -> {
-            createStudent(studentDAO);
+            findByLastName(studentDAO,"Thakkar");
         };
     }
 
-    private void createStudent(StudentDAO studentDAO) {
-        Student tempStudent = new Student("Ramakant","Thakkar","Rama@gmail.com");
-        Student tempStuden1 = new Student("Radhe","Tiwari","Radhe@gmail.com");
-        Student tempStuden2 = new Student("Jitu","Telecom","Jitu@gmail.com");
-        studentDAO.save(tempStudent);
-        studentDAO.save(tempStuden1);
-        studentDAO.save(tempStuden2);
+    private void findAllStudents(StudentDAO studentDAO) {
+        for(Student student: studentDAO.findAll()){
+            System.out.println(student);
+        }
     }
+    private void findByLastName(StudentDAO studentDAO,String lastName){
+        for (Student student : studentDAO.findByName(lastName)){
+            System.out.println(student);
+        }
+
+    }
+
+
+    private void ReadStudent(StudentDAO studentDAO) {
+        Student tempStudent = new Student("Navneet","Thakkar","Navvie@gmail.com");
+
+        studentDAO.save(tempStudent);
+
+        int intId= tempStudent.getId();
+        System.out.println("Id found :"+intId);
+
+        System.out.println(studentDAO.findById(intId));
+    }
+
 }
