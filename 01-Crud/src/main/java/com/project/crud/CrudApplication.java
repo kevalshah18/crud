@@ -17,7 +17,7 @@ public class CrudApplication {
     @Bean
     public CommandLineRunner commandLineRunner(StudentDAO studentDAO) {
         return runner -> {
-            deleteStudent(studentDAO);
+//            deleteStudent(studentDAO);
         };
     }
 
