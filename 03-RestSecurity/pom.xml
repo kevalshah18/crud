@@ -54,8 +54,13 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+        <dependency>
+            <groupId>03-RestSecurity</groupId>
+            <artifactId>03-RestSecurity</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<plugins>
