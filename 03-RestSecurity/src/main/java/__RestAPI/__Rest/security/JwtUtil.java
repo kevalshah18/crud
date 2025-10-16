@@ -29,30 +29,45 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails) {
+
         Map<String, Object> claims = new HashMap<>();
-        // Add roles as claim
         Collection<?> authorities = userDetails.getAuthorities();
         claims.put("roles", authorities);
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+
+        return token;
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+
+        try {
+            final String username = extractUsername(token);
+
+            boolean usernameMatch = username.equals(userDetails.getUsername());
+            boolean notExpired = !isTokenExpired(token);
+
+
+            boolean isValid = usernameMatch && notExpired;
+
+            return isValid;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        String username = extractClaim(token, Claims::getSubject);
+        return username;
     }
 
     public Date extractExpiration(String token) {
@@ -66,20 +81,30 @@ public class JwtUtil {
 
     private Claims parseClaims(String token) {
         try {
-            return Jwts.parserBuilder()
+            Claims claims = Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (JwtException ex) {
-            // includes ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException
-            throw ex;
+            return claims;
+        } catch (ExpiredJwtException e) {
+            throw e;
+        } catch (UnsupportedJwtException e) {
+            throw e;
+        } catch (MalformedJwtException e) {
+            throw e;
+        } catch (SignatureException e) {
+            throw e;
+        } catch (JwtException e) {
+            throw e;
         }
     }
 
     private boolean isTokenExpired(String token) {
         try {
-            return extractExpiration(token).before(new Date());
+            Date expiration = extractExpiration(token);
+            boolean expired = expiration.before(new Date());
+            return expired;
         } catch (ExpiredJwtException e) {
             return true;
         }
