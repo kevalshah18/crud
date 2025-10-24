@@ -7,17 +7,21 @@ import {
 } from "./api/employeeApi";
 import EmployeeGrid from "./components/EmployeeGrid";
 import EmployeeFormModal from "./components/EmployeeFormModal";
+import LoginPage from "./components/LoginPage";
 
 export default function App() {
+  const [user, setUser] = useState(null); // stores login info and roles
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [toast, setToast] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
-  useEffect(() => {
+  const handleLogin = (userData) => {
+    setUser(userData); // store username and roles returned from backend
     fetchAll();
-  }, []);
+  };
 
   async function fetchAll() {
     try {
@@ -47,15 +51,20 @@ export default function App() {
     setModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this employee?")) return;
+  const handleDeleteClick = (id) => {
+    setConfirmDelete(id);
+  };
+
+  const confirmDeleteEmployee = async () => {
     try {
-      await deleteEmployee(id);
-      setEmployees((p) => p.filter((x) => x.id !== id));
+      await deleteEmployee(confirmDelete);
+      setEmployees((p) => p.filter((x) => x.id !== confirmDelete));
       showToast("Deleted successfully");
     } catch (err) {
       console.error(err);
       showToast("Failed to delete");
+    } finally {
+      setConfirmDelete(null);
     }
   };
 
@@ -77,12 +86,19 @@ export default function App() {
     }
   };
 
+  // Conditional rendering: show login page if not logged in
+  if (!user) return <LoginPage onLogin={handleLogin} />;
+
   return (
     <div className="container">
       <header className="topbar">
         <h1>Employee Manager</h1>
         <div>
-          <button className="btn primary" onClick={handleAddClick}>➕ Add Employee</button>
+          {user.roles.includes("MANAGER") && (
+            <button className="btn primary" onClick={handleAddClick}>
+              ➕ Add Employee
+            </button>
+          )}
         </div>
       </header>
 
@@ -90,7 +106,12 @@ export default function App() {
         {loading ? (
           <div className="loading">Loading employees…</div>
         ) : (
-          <EmployeeGrid employees={employees} onEdit={handleEdit} onDelete={handleDelete} />
+          <EmployeeGrid
+            employees={employees}
+            onEdit={handleEdit}
+            onDelete={handleDeleteClick}
+            userRoles={user.roles}
+          />
         )}
       </main>
 
@@ -100,6 +121,23 @@ export default function App() {
         employee={editing}
         onSave={handleSave}
       />
+
+      {confirmDelete !== null && (
+        <div className="modal-backdrop">
+          <div className="modal">
+            <h2>Confirm Delete?</h2>
+            <p>Are you sure you want to delete this employee?</p>
+            <div className="modal-actions">
+              <button className="btn danger" onClick={confirmDeleteEmployee}>
+                Yes, Delete
+              </button>
+              <button className="btn" onClick={() => setConfirmDelete(null)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {toast && <div className="toast">{toast}</div>}
     </div>

@@ -26,13 +26,19 @@ body{
   padding:16px;
 }
 
-.topbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:18px;
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 60px;
+  background-color: #f5f5f5;
 }
-.topbar h1{margin:0;font-size:20px}
+.topbar h1{
+  margin:0;
+  font-size:20px;
+}
 
 /* buttons */
 .btn{
@@ -62,8 +68,8 @@ body{
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
 
-/* card */
-.card{
+/* Employee Card */
+.employee-card, .card{
   display:flex;
   flex-direction:column;
   justify-content:space-between;
@@ -73,16 +79,31 @@ body{
   box-shadow:var(--shadow);
   transition:transform .12s ease, box-shadow .12s ease;
 }
-.card:hover{ transform: translateY(-6px); box-shadow: 0 10px 24px rgba(20,20,30,0.08); }
+.employee-card:hover, .card:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(20,20,30,0.08);
+}
 
 .card-body{ margin-bottom:12px }
-.card-title{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
+.card-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:6px;
+}
 .card-title .name{ font-weight:700 }
 .card-title .id{ font-size:12px; color:var(--muted) }
 .email{ color:var(--muted); font-size:13px; word-break:break-word }
 
-/* actions */
-.card-actions{ display:flex; gap:8px; align-items:center; justify-content:flex-end; }
+.card-actions, .employee-card .actions{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  justify-content:flex-end;
+}
+
+/* icon buttons */
 .btn-icon{ background:transparent; border:1px solid rgba(0,0,0,0.06); padding:8px; border-radius:8px; cursor:pointer; }
 .btn-icon.danger{ border-color:rgba(220,38,38,0.12); }
 
@@ -102,11 +123,14 @@ body{
 }
 .modal{
   width:100%;
-  max-width:520px;
+  max-width:500px;
+  margin:0 auto;
   background:var(--card);
   border-radius:12px;
   box-shadow:0 22px 60px rgba(2,6,23,0.35);
   overflow:hidden;
+  padding:20px;
+  box-sizing:border-box;
 }
 .modal-header{
   display:flex;
@@ -120,8 +144,17 @@ body{
 
 .modal-form{ padding:18px; display:flex; flex-direction:column; gap:10px; }
 .modal-form label{ display:flex; flex-direction:column; gap:6px; font-size:13px; color:#111827; }
-.modal-form input{
-  padding:10px 12px; border-radius:8px; border:1px solid #e6e9ef; outline:none; font-size:14px;
+.modal-form input,
+.modal-form select,
+.modal-form textarea{
+  width:100%;
+  max-width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #e6e9ef;
+  outline:none;
+  font-size:14px;
+  text-align:left;
 }
 .modal-actions{ display:flex; gap:10px; justify-content:flex-end; padding-top:6px; }
 
@@ -143,8 +176,45 @@ body{
   font-weight:600;
 }
 
-/* responsive tweaks */
-@media (max-width:520px){
-  .container{ padding:10px; margin:16px auto }
-  .topbar { flex-direction:column; align-items:flex-start; gap:10px }
+/* small tweaks for mobile responsiveness */
+@media (max-width: 768px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .topbar h1 {
+    font-size: 18px;
+  }
+
+  .grid {
+    display: block;
+  }
+
+  .employee-card {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal .modal-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .modal {
+    padding:16px;
+  }
+
+  .toast {
+    right:10px;
+    bottom:10px;
+    padding:8px 12px;
+  }
+
+  .employee-card .actions {
+    flex-direction: column;
+    gap:8px;
+  }
 }
